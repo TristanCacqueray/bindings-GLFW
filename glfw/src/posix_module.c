@@ -1,7 +1,7 @@
 //========================================================================
-// GLFW 3.3 Cocoa - www.glfw.org
+// GLFW 3.4 POSIX - www.glfw.org
 //------------------------------------------------------------------------
-// Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2021 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -23,29 +23,33 @@
 //    distribution.
 //
 //========================================================================
+// It is fine to use C99 in this file because it will not be built with VS
+//========================================================================
 
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOCFPlugIn.h>
-#include <IOKit/hid/IOHIDLib.h>
-#include <IOKit/hid/IOHIDKeys.h>
+#include "internal.h"
 
-#define _GLFW_PLATFORM_JOYSTICK_STATE         _GLFWjoystickNS ns
-#define _GLFW_PLATFORM_LIBRARY_JOYSTICK_STATE struct { int dummyJoystick; }
+#if defined(GLFW_BUILD_POSIX_MODULE)
 
-#define _GLFW_PLATFORM_MAPPING_NAME "Mac OS X"
-#define GLFW_BUILD_COCOA_MAPPINGS
+#include <dlfcn.h>
 
-// Cocoa-specific per-joystick data
-//
-typedef struct _GLFWjoystickNS
+//////////////////////////////////////////////////////////////////////////
+//////                       GLFW platform API                      //////
+//////////////////////////////////////////////////////////////////////////
+
+void* _glfwPlatformLoadModule(const char* path)
 {
-    IOHIDDeviceRef      device;
-    CFMutableArrayRef   axes;
-    CFMutableArrayRef   buttons;
-    CFMutableArrayRef   hats;
-} _GLFWjoystickNS;
+    return dlopen(path, RTLD_LAZY | RTLD_LOCAL);
+}
 
+void _glfwPlatformFreeModule(void* module)
+{
+    dlclose(module);
+}
 
-void _glfwInitJoysticksNS(void);
-void _glfwTerminateJoysticksNS(void);
+GLFWproc _glfwPlatformGetModuleSymbol(void* module, const char* name)
+{
+    return dlsym(module, name);
+}
+
+#endif // GLFW_BUILD_POSIX_MODULE
 

@@ -1,7 +1,7 @@
 //========================================================================
-// GLFW 3.3 Cocoa - www.glfw.org
+// GLFW 3.4 POSIX - www.glfw.org
 //------------------------------------------------------------------------
-// Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2022 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -23,29 +23,10 @@
 //    distribution.
 //
 //========================================================================
+// It is fine to use C99 in this file because it will not be built with VS
+//========================================================================
 
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOCFPlugIn.h>
-#include <IOKit/hid/IOHIDLib.h>
-#include <IOKit/hid/IOHIDKeys.h>
+#include <poll.h>
 
-#define _GLFW_PLATFORM_JOYSTICK_STATE         _GLFWjoystickNS ns
-#define _GLFW_PLATFORM_LIBRARY_JOYSTICK_STATE struct { int dummyJoystick; }
-
-#define _GLFW_PLATFORM_MAPPING_NAME "Mac OS X"
-#define GLFW_BUILD_COCOA_MAPPINGS
-
-// Cocoa-specific per-joystick data
-//
-typedef struct _GLFWjoystickNS
-{
-    IOHIDDeviceRef      device;
-    CFMutableArrayRef   axes;
-    CFMutableArrayRef   buttons;
-    CFMutableArrayRef   hats;
-} _GLFWjoystickNS;
-
-
-void _glfwInitJoysticksNS(void);
-void _glfwTerminateJoysticksNS(void);
+GLFWbool _glfwPollPOSIX(struct pollfd* fds, nfds_t count, double* timeout);
 

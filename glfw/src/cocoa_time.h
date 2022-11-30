@@ -1,7 +1,7 @@
 //========================================================================
-// GLFW 3.3 Cocoa - www.glfw.org
+// GLFW 3.4 macOS - www.glfw.org
 //------------------------------------------------------------------------
-// Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2009-2021 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -24,28 +24,12 @@
 //
 //========================================================================
 
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOCFPlugIn.h>
-#include <IOKit/hid/IOHIDLib.h>
-#include <IOKit/hid/IOHIDKeys.h>
+#define GLFW_COCOA_LIBRARY_TIMER_STATE  _GLFWtimerNS   ns;
 
-#define _GLFW_PLATFORM_JOYSTICK_STATE         _GLFWjoystickNS ns
-#define _GLFW_PLATFORM_LIBRARY_JOYSTICK_STATE struct { int dummyJoystick; }
-
-#define _GLFW_PLATFORM_MAPPING_NAME "Mac OS X"
-#define GLFW_BUILD_COCOA_MAPPINGS
-
-// Cocoa-specific per-joystick data
+// Cocoa-specific global timer data
 //
-typedef struct _GLFWjoystickNS
+typedef struct _GLFWtimerNS
 {
-    IOHIDDeviceRef      device;
-    CFMutableArrayRef   axes;
-    CFMutableArrayRef   buttons;
-    CFMutableArrayRef   hats;
-} _GLFWjoystickNS;
-
-
-void _glfwInitJoysticksNS(void);
-void _glfwTerminateJoysticksNS(void);
+    uint64_t        frequency;
+} _GLFWtimerNS;
 

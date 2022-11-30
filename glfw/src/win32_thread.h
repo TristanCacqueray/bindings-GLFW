@@ -1,6 +1,7 @@
 //========================================================================
-// GLFW 3.3 Cocoa - www.glfw.org
+// GLFW 3.4 Win32 - www.glfw.org
 //------------------------------------------------------------------------
+// Copyright (c) 2002-2006 Marcus Geelnard
 // Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
@@ -24,28 +25,24 @@
 //
 //========================================================================
 
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOCFPlugIn.h>
-#include <IOKit/hid/IOHIDLib.h>
-#include <IOKit/hid/IOHIDKeys.h>
+#include <windows.h>
 
-#define _GLFW_PLATFORM_JOYSTICK_STATE         _GLFWjoystickNS ns
-#define _GLFW_PLATFORM_LIBRARY_JOYSTICK_STATE struct { int dummyJoystick; }
+#define GLFW_WIN32_TLS_STATE            _GLFWtlsWin32     win32;
+#define GLFW_WIN32_MUTEX_STATE          _GLFWmutexWin32   win32;
 
-#define _GLFW_PLATFORM_MAPPING_NAME "Mac OS X"
-#define GLFW_BUILD_COCOA_MAPPINGS
-
-// Cocoa-specific per-joystick data
+// Win32-specific thread local storage data
 //
-typedef struct _GLFWjoystickNS
+typedef struct _GLFWtlsWin32
 {
-    IOHIDDeviceRef      device;
-    CFMutableArrayRef   axes;
-    CFMutableArrayRef   buttons;
-    CFMutableArrayRef   hats;
-} _GLFWjoystickNS;
+    GLFWbool            allocated;
+    DWORD               index;
+} _GLFWtlsWin32;
 
-
-void _glfwInitJoysticksNS(void);
-void _glfwTerminateJoysticksNS(void);
+// Win32-specific mutex data
+//
+typedef struct _GLFWmutexWin32
+{
+    GLFWbool            allocated;
+    CRITICAL_SECTION    section;
+} _GLFWmutexWin32;
 
